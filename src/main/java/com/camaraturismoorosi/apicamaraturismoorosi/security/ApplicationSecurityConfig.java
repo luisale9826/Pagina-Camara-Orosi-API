@@ -50,7 +50,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
             .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey))
             .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfig), JwtUsernameAndPasswordAuthenticationFilter.class)
             .authorizeRequests()
-            .antMatchers("/visiter/**").permitAll()
+            .antMatchers("/", "index", "/visiter/**").permitAll()
             .antMatchers("/management/**").hasRole(ADMIN.name())
             .anyRequest()
             .authenticated()

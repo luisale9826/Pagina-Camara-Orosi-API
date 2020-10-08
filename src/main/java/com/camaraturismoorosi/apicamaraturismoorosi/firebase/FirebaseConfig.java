@@ -3,6 +3,7 @@ package com.camaraturismoorosi.apicamaraturismoorosi.firebase;
 import java.io.FileInputStream;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.Firestore;
@@ -15,27 +16,33 @@ import org.springframework.stereotype.Service;
 @Service
 public class FirebaseConfig {
 
-    @PostConstruct
-    public void firebaseInitializer() {
+    private FirebaseApp firebaseApp;
 
+    @PostConstruct
+    private FirebaseApp firebaseInitializer() {
+        FileInputStream serviceAccount;
         try {
-            FileInputStream serviceAccount = new FileInputStream(
-                    "credentials.json");
+            serviceAccount = new FileInputStream("credentials.json");
 
             FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .build();
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
 
-            FirebaseApp.initializeApp(options);
-            System.out.println("Connected!!!");
+            firebaseApp = FirebaseApp.initializeApp(options);
+            System.out.println("CONNECTED!!!");
+            return firebaseApp;
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        return null;
     }
 
-    public Firestore getFirebaseDatabase() {
-        return FirestoreClient.getFirestore();
+    public Firestore getInstance() {
+        return FirestoreClient.getFirestore(firebaseApp);
     }
+
+    @PreDestroy
+    private void firebaseCloser() {
+        firebaseApp.delete();
+    } 
 
 }

@@ -26,11 +26,11 @@ public class DirectoryService implements DirectoryDao {
 
     @Override
     public List<Company> getAllCompanies() {
-        Firestore fbInstance = fbConfig.getFirebaseDatabase();
-        ApiFuture<QuerySnapshot> query = fbInstance.collection(COLLECTION_NAME).get();
-        List<Company> companies = null;
+        Firestore fbInstance = fbConfig.getInstance();
+
         try {
-            companies = query.get().getDocuments()
+        ApiFuture<QuerySnapshot> query = fbInstance.collection(COLLECTION_NAME).get();
+        return query.get().getDocuments()
                 .stream()
                 .map(document -> 
                     new Company(
@@ -42,29 +42,34 @@ public class DirectoryService implements DirectoryDao {
                         document.getString("companyLogo")
                     )
                 ).collect(Collectors.toList());
-            fbInstance.close();
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.out.println(e);
-        }     
-        return  companies;
+        }
+        return null;
     }
 
     @Override
     public void updateCompany(String companyId, Company company) {
+        Firestore fbInstance = fbConfig.getInstance();
         try {
-            Firestore fbInstance = fbConfig.getFirebaseDatabase();
-            fbInstance.collection(COLLECTION_NAME).document(companyId).set(new Company(company.getCompanyName(), company.getCompanyEmail(), company.getCompanyPhone(), company.getCompanyCategory(), company.getCompanyLogo()));
-            fbInstance.close();
+            fbInstance.collection(COLLECTION_NAME).document(companyId).set(
+                new Company(
+                    company.getCompanyName(),
+                    company.getCompanyEmail(),
+                    company.getCompanyPhone(),
+                    company.getCompanyCategory(),
+                    company.getCompanyLogo()
+                    )
+                );
         } catch(Exception e) {
             System.out.println(e);
         }
-        
     }
 
     @Override
     public void deleteCompany(String companyId) {
+        Firestore fbInstance = fbConfig.getInstance();
         try {
-            Firestore fbInstance = fbConfig.getFirebaseDatabase();
             fbInstance.collection(COLLECTION_NAME).document(companyId).delete();
         } catch (Exception e) {
             System.out.println(e);
@@ -73,19 +78,17 @@ public class DirectoryService implements DirectoryDao {
 
     @Override
     public void insertCompany(Company company) {
+        Firestore fbInstance = fbConfig.getInstance();
         try {
             Map<String, Object> newCompany = new HashMap<>();
                 newCompany.put("companyName", company.getCompanyName());
                 newCompany.put("companyEmail", company.getCompanyEmail());
                 newCompany.put("companyPhone", company.getCompanyPhone());
                 newCompany.put("companyLogo", company.getCompanyLogo());
-                Firestore fbInstance = fbConfig.getFirebaseDatabase();
             fbInstance.collection(COLLECTION_NAME).add(newCompany);
             fbInstance.close();
         } catch(Exception e) {
             System.out.println(e);
         }
-        
-        
     }
 }
