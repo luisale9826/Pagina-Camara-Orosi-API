@@ -7,6 +7,18 @@
 # BlueJ files
 *.ctxt
 
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+.settings
+.springBeans
+.sts4-cache
+.project
+.apt_generated
+.factorypath
+
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
@@ -42,7 +54,7 @@ hs_err_pid*
 .recommenders
 .settings
 .springBeans
-.vscode
+.vscode/
 /code
 MANIFEST.MF
 _site/
