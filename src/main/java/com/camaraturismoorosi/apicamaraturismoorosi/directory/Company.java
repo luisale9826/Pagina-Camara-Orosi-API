@@ -5,6 +5,8 @@ import javax.validation.constraints.NotBlank;
 
 import com.google.firebase.database.annotations.NotNull;
 
+import org.springframework.web.multipart.MultipartFile;
+
 
 public class Company {
 
@@ -23,12 +25,12 @@ public class Company {
     @NotBlank(message= "Company Category must be indicated")
     private String companyCategory;
     private String companyLogo;
+    private MultipartFile image;
 
     public Company() {
     }
 
-    public Company(String companyId, String companyName, String companyEmail, String companyPhone, String companyCategory, String companyLogo) {
-        this.companyId = companyId;
+    public Company(String companyName, String companyEmail, String companyPhone, String companyCategory, String companyLogo) {
         this.companyName = companyName;
         this.companyEmail = companyEmail;
         this.companyPhone = companyPhone;
@@ -36,7 +38,9 @@ public class Company {
         this.companyLogo = companyLogo;
     }
 
-    public Company(String companyName, String companyEmail, String companyPhone, String companyCategory, String companyLogo) {
+
+    public Company(String companyId, String companyName, String companyEmail, String companyPhone, String companyCategory, String companyLogo) {
+        this.companyId = companyId;
         this.companyName = companyName;
         this.companyEmail = companyEmail;
         this.companyPhone = companyPhone;
@@ -70,6 +74,10 @@ public class Company {
 
     public String getCompanyLogo() {
         return companyLogo;
+    }
+
+    public MultipartFile getImage() {
+        return image;
     }
 
     @Override
