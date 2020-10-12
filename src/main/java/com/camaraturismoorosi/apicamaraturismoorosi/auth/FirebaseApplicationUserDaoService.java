@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import com.camaraturismoorosi.apicamaraturismoorosi.firebase.FirebaseConfig;
 import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.Query;
 import com.google.cloud.firestore.QuerySnapshot;
 
@@ -32,12 +33,11 @@ public class FirebaseApplicationUserDaoService implements ApplicationUserDao {
     }
 
     private List<ApplicationUser> getApplicationUsers() {
-
-        Query query = fbConfig.getFirebaseDatabase().collection(COLLECTION_NAME).whereEqualTo("role", "admin");
+        Firestore fbInstance = fbConfig.getFirestoreInstance();
+        Query query = fbInstance.collection(COLLECTION_NAME).whereEqualTo("role", "admin");
         ApiFuture<QuerySnapshot> queryResult = query.get();
-        List<ApplicationUser> users = null;
         try {
-            users = queryResult.get().getDocuments().stream()
+            return queryResult.get().getDocuments().stream()
                     .map(user -> 
                     new ApplicationUser(
                             user.getString("userName"), 
@@ -47,14 +47,14 @@ public class FirebaseApplicationUserDaoService implements ApplicationUserDao {
                             true, 
                             true,
                             true, 
-                            true)
+                            true
                             )
+                        )
                     .collect(Collectors.toList());
         } catch (Exception e) {
             System.out.println(e);
         }
-
-        return users;
+        return null;
     }
 
 }

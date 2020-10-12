@@ -5,10 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.camaraturismoorosi.apicamaraturismoorosi.firebase.FirebaseConfig;
-import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.QuerySnapshot;
+import com.camaraturismoorosi.apicamaraturismoorosi.firebase.FirebaseService;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,75 +15,44 @@ import org.springframework.stereotype.Service;
 public class DirectoryService implements DirectoryDao {
 
     private final String COLLECTION_NAME = "companies";
-    private final FirebaseConfig fbConfig;
+    private final String FOLDER = "directory";
+    private final FirebaseService fbService;
 
     @Autowired
-    public DirectoryService(FirebaseConfig fbConfig) {
-        this.fbConfig = fbConfig;
+    public DirectoryService(FirebaseService fbService) {
+        this.fbService = fbService;
     }
 
     @Override
     public List<Company> getAllCompanies() {
-        Firestore fbInstance = fbConfig.getFirebaseDatabase();
-        ApiFuture<QuerySnapshot> query = fbInstance.collection(COLLECTION_NAME).get();
-        List<Company> companies = null;
-        try {
-            companies = query.get().getDocuments()
-                .stream()
-                .map(document -> 
-                    new Company(
-                        document.getString("companyId"),
-                        document.getString("companyName"),
-                        document.getString("companyEmail"),
-                        document.getString("companyPhone"),
-                        document.getString("companyCategory"),
-                        document.getString("companyLogo")
-                    )
-                ).collect(Collectors.toList());
-            fbInstance.close();
-        } catch(Exception e) {
-            System.out.println(e);
-        }     
-        return  companies;
+            List<QueryDocumentSnapshot> objects = fbService.getObjects(COLLECTION_NAME);
+            return objects.stream()
+                    .map(document -> new Company(document.getString("companyId"), document.getString("companyName"),
+                            document.getString("companyEmail"), document.getString("companyPhone"),
+                            document.getString("companyCategory"), document.getString("companyLogo")))
+                    .collect(Collectors.toList());
     }
 
     @Override
     public void updateCompany(String companyId, Company company) {
-        try {
-            Firestore fbInstance = fbConfig.getFirebaseDatabase();
-            fbInstance.collection(COLLECTION_NAME).document(companyId).set(new Company(company.getCompanyName(), company.getCompanyEmail(), company.getCompanyPhone(), company.getCompanyCategory(), company.getCompanyLogo()));
-            fbInstance.close();
-        } catch(Exception e) {
-            System.out.println(e);
-        }
-        
+        Company updatedCompany = new Company(company.getCompanyName(), company.getCompanyEmail(), company.getCompanyPhone(),
+                            company.getCompanyCategory(), company.getCompanyLogo());
+        fbService.updateObject(companyId, COLLECTION_NAME, updatedCompany);
     }
 
     @Override
     public void deleteCompany(String companyId) {
-        try {
-            Firestore fbInstance = fbConfig.getFirebaseDatabase();
-            fbInstance.collection(COLLECTION_NAME).document(companyId).delete();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+        fbService.deleteObject(companyId, COLLECTION_NAME);
     }
 
     @Override
     public void insertCompany(Company company) {
-        try {
-            Map<String, Object> newCompany = new HashMap<>();
-                newCompany.put("companyName", company.getCompanyName());
-                newCompany.put("companyEmail", company.getCompanyEmail());
-                newCompany.put("companyPhone", company.getCompanyPhone());
-                newCompany.put("companyLogo", company.getCompanyLogo());
-                Firestore fbInstance = fbConfig.getFirebaseDatabase();
-            fbInstance.collection(COLLECTION_NAME).add(newCompany);
-            fbInstance.close();
-        } catch(Exception e) {
-            System.out.println(e);
-        }
-        
-        
+        String link = fbService.saveImage(FOLDER, company.getImage());
+        Map<String, Object> newCompany = new HashMap<>();
+        newCompany.put("companyName", company.getCompanyName());
+        newCompany.put("companyEmail", company.getCompanyEmail());
+        newCompany.put("companyPhone", company.getCompanyPhone());
+        newCompany.put("companyLogo", link);
+        fbService.insertObject(COLLECTION_NAME, newCompany);
     }
 }
