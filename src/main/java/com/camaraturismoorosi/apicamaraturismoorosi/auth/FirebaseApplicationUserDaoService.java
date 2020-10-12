@@ -33,7 +33,7 @@ public class FirebaseApplicationUserDaoService implements ApplicationUserDao {
     }
 
     private List<ApplicationUser> getApplicationUsers() {
-        Firestore fbInstance = fbConfig.getInstance();
+        Firestore fbInstance = fbConfig.getFirestoreInstance();
         Query query = fbInstance.collection(COLLECTION_NAME).whereEqualTo("role", "admin");
         ApiFuture<QuerySnapshot> queryResult = query.get();
         try {

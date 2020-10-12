@@ -7,9 +7,11 @@ import javax.annotation.PreDestroy;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.storage.Bucket;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
+import com.google.firebase.cloud.StorageClient;
 
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,7 @@ public class FirebaseConfig {
             serviceAccount = new FileInputStream("credentials.json");
 
             FirebaseOptions options = new FirebaseOptions.Builder()
+                    .setStorageBucket("prueba-3e914.appspot.com")
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
 
             firebaseApp = FirebaseApp.initializeApp(options);
@@ -36,8 +39,12 @@ public class FirebaseConfig {
         return null;
     }
 
-    public Firestore getInstance() {
+    public Firestore getFirestoreInstance() {
         return FirestoreClient.getFirestore(firebaseApp);
+    }
+
+    public Bucket getStorageInstance() {
+        return StorageClient.getInstance().bucket();
     }
 
     @PreDestroy
