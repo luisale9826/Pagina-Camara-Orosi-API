@@ -10,6 +10,7 @@ import com.camaraturismoorosi.apicamaraturismoorosi.jwt.JwtUsernameAndPasswordAu
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -19,7 +20,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 import static com.camaraturismoorosi.apicamaraturismoorosi.security.ApplicationUserRole.ADMIN;
+
+import java.util.Arrays;
 
 
 @Configuration
@@ -31,20 +38,24 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     private final ApplicationUserService applicationUserService;
     private final SecretKey secretKey;
     private final JwtConfig jwtConfig;
+    private final Environment env;
 
     @Autowired
     public ApplicationSecurityConfig(PasswordEncoder passwordEncoder, ApplicationUserService applicationUserService,
-                                     SecretKey secretKey, JwtConfig jwtConfig) {
+                                     SecretKey secretKey, JwtConfig jwtConfig, Environment env) {
         this.passwordEncoder = passwordEncoder;
         this.applicationUserService = applicationUserService;
         this.secretKey = secretKey;
         this.jwtConfig = jwtConfig;
+        this.env = env;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
             .csrf().disable()
+            .cors()
+            .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey))
@@ -60,8 +71,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST"))
                 .clearAuthentication(true)
                 .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID", "remember-me")
-                .logoutSuccessUrl("/login");
+                .deleteCookies("Authorization");
     }
 
     @Override
@@ -76,4 +86,20 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         provider.setUserDetailsService(applicationUserService);
         return provider;
     }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+          config.setAllowedOrigins(Arrays.asList("*"));
+          config.setAllowedMethods(Arrays.asList("*"));
+          config.setAllowedHeaders(Arrays.asList("*"));
+          config.setExposedHeaders(Arrays.asList("Authorization"));
+          config.setAllowCredentials(true);
+        config.applyPermitDefaultValues();
+        
+        source.registerCorsConfiguration("/**", config);
+        return source;
+  }	
+
 }
