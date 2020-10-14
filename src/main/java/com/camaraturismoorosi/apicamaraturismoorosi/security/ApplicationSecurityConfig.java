@@ -19,7 +19,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 import static com.camaraturismoorosi.apicamaraturismoorosi.security.ApplicationUserRole.ADMIN;
+
+import java.util.Arrays;
 
 
 @Configuration
@@ -45,6 +51,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
             .csrf().disable()
+            .cors()
+            .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager(), jwtConfig, secretKey))
@@ -60,8 +68,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST"))
                 .clearAuthentication(true)
                 .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID", "remember-me")
-                .logoutSuccessUrl("/login");
+                .deleteCookies("Authorization");
     }
 
     @Override
@@ -76,4 +83,20 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         provider.setUserDetailsService(applicationUserService);
         return provider;
     }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+          config.setAllowedOrigins(Arrays.asList("*"));
+          config.setAllowedMethods(Arrays.asList("*"));
+          config.setAllowedHeaders(Arrays.asList("*"));
+          config.setExposedHeaders(Arrays.asList("Authorization"));
+          config.setAllowCredentials(true);
+        config.applyPermitDefaultValues();
+        
+        source.registerCorsConfiguration("/**", config);
+        return source;
+  }	
+
 }
