@@ -6,9 +6,9 @@ public interface DirectoryDao {
 
     List<Company> getAllCompanies();
     
-    void updateCompany(String companyId, Company company);
+    void updateCompany(Company company);
 
-    void deleteCompany(String companyId);
+    void deleteCompany(String companyId) throws Exception;
 
     void insertCompany(Company company);
 }

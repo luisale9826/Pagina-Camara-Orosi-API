@@ -27,21 +27,24 @@ public class DirectoryService implements DirectoryDao {
     public List<Company> getAllCompanies() {
             List<QueryDocumentSnapshot> objects = fbService.getObjects(COLLECTION_NAME);
             return objects.stream()
-                    .map(document -> new Company(document.getString("companyId"), document.getString("companyName"),
+                    .map(document -> new Company(document.getId(), document.getString("companyName"),
                             document.getString("companyEmail"), document.getString("companyPhone"),
                             document.getString("companyCategory"), document.getString("companyLogo")))
                     .collect(Collectors.toList());
     }
 
     @Override
-    public void updateCompany(String companyId, Company company) {
+    public void updateCompany(Company company) {
         Company updatedCompany = new Company(company.getCompanyName(), company.getCompanyEmail(), company.getCompanyPhone(),
                             company.getCompanyCategory(), company.getCompanyLogo());
-        fbService.updateObject(companyId, COLLECTION_NAME, updatedCompany);
+        fbService.updateObject(company.getCompanyId(), COLLECTION_NAME, updatedCompany);
     }
 
     @Override
-    public void deleteCompany(String companyId) {
+    public void deleteCompany(String companyId) throws Exception {
+        if (companyId.isEmpty() || companyId.isBlank()) {
+            throw new Exception("Se debe especificar la compañía a ser eliminada");
+        }
         fbService.deleteObject(companyId, COLLECTION_NAME);
     }
 
