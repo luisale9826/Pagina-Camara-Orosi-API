@@ -10,5 +10,5 @@ public interface DirectoryDao {
 
     void deleteCompany(String companyId) throws Exception;
 
-    void insertCompany(Company company);
+    String insertCompany(Company company) throws Exception;
 }
