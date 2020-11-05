@@ -1,6 +1,7 @@
 package com.camaraturismoorosi.apicamaraturismoorosi.directory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -59,6 +60,11 @@ public class DirectoryManagementController {
     public ResponseEntity<Map<String, Object>> insertCompany(@Valid @RequestBody Company company) {
         Map<String, Object> result = new HashMap<String, Object>();
         try {
+            Map<Integer, Error> errors = directoryService.checkNameEmailPhonesUnique(company);
+            if (!errors.isEmpty()) {
+                result.put("errors", errors);
+                return new ResponseEntity<Map<String, Object>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
             String companyId= directoryService.insertCompany(company);
             result.put("companyId", companyId);
         } catch (Exception e) {
