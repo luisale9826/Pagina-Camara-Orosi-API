@@ -1,10 +1,11 @@
 package com.camaraturismoorosi.apicamaraturismoorosi.firebase;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.storage.Blob;
@@ -24,9 +25,10 @@ public class FirebaseService {
         this.fbConfig = fbConfig;
     }
 
-    public void insertObject(String collection, Map<String, Object> item) {
+    public String insertObject(String collection, Map<String, Object> item) throws Exception {
         Firestore fbInstance = fbConfig.getFirestoreInstance();
-        fbInstance.collection(collection).add(item);
+        ApiFuture<DocumentReference> document = fbInstance.collection(collection).add(item);
+        return document.get().getId();
     }
 
     public void updateObject(String objectId, String collection, Object updatedObject) {
@@ -49,17 +51,23 @@ public class FirebaseService {
         return null;
     }
 
-    public String saveImage(String path, MultipartFile image) {
-        Bucket bucket = fbConfig.getStorageInstance();
-        Blob blob;
-        try {
-            blob = bucket.create(path + "/" + image.getOriginalFilename(), image.getInputStream(),
-                    image.getContentType());
-            return blob.getMediaLink();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public String saveImage(String path, MultipartFile image) throws Exception {
+        if (image.getContentType().equals("image/png") || image.getContentType().equals("image/jpg")) {
+            Bucket bucket = fbConfig.getStorageInstance();
+            Blob blob;
+                blob = bucket.create(path + "/" + image.getOriginalFilename(), image.getInputStream(),
+                        image.getContentType());
+                return blob.getMediaLink();
+        } else {
+            throw new Exception("El formato del archivo no es el indicado");
         }
-        return null;
+
+    }
+
+    public void updateObjectSpecificFields(String collection, String objectId, Map<String,Object> updatedFields) {
+        DocumentReference documentRef = fbConfig.getFirestoreInstance().collection(collection).document(objectId);
+        documentRef.get();
+        documentRef.update(updatedFields);
     }
 
 }

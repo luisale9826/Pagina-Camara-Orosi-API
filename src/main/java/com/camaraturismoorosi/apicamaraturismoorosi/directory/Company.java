@@ -1,51 +1,63 @@
 package com.camaraturismoorosi.apicamaraturismoorosi.directory;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 import com.google.firebase.database.annotations.NotNull;
-
-import org.springframework.web.multipart.MultipartFile;
-
-
 public class Company {
 
     private String companyId;
     @NotNull
-    @NotBlank(message= "Company Name must be indicated")
+    @NotBlank(message = "Company Name must be indicated")
     private String companyName;
     @Email(message = "Email must be valid")
-    @NotNull
-    @NotBlank(message= "Company Email must be indicated")
     private String companyEmail;
+    private List<Map<String, String>> companyPhones;
     @NotNull
-    @NotBlank(message= "Company Phone must be indicated")
-    private String companyPhone;
-    @NotNull
-    @NotBlank(message= "Company Category must be indicated")
+    @NotBlank(message = "Company Category must be indicated")
     private String companyCategory;
+    private String companyDescription;
+    private String companyAddress;
+    private String companyLocation;
     private String companyLogo;
-    private MultipartFile image;
+    private String companyFacebookProfile;
+    private String companyInstagramProfile;
 
     public Company() {
     }
 
-    public Company(String companyName, String companyEmail, String companyPhone, String companyCategory, String companyLogo) {
+    public Company(String companyName, String companyEmail, List<Map<String, String>> companyPhones, String companyCategory,
+            String companyDescription, String companyAddress, String companyLocation, String companyLogo,
+            String companyFacebookProfile, String companyInstagramProfile) {
         this.companyName = companyName;
         this.companyEmail = companyEmail;
-        this.companyPhone = companyPhone;
+        this.companyPhones = companyPhones;
         this.companyCategory = companyCategory;
+        this.companyDescription = companyDescription;
         this.companyLogo = companyLogo;
+        this.companyAddress = companyAddress;
+        this.companyLocation = companyLocation;
+        this.companyFacebookProfile = companyFacebookProfile;
+        this.companyInstagramProfile = companyInstagramProfile;
     }
 
-
-    public Company(String companyId, String companyName, String companyEmail, String companyPhone, String companyCategory, String companyLogo) {
+    public Company(String companyId, String companyName, String companyEmail, List<Map<String, String>> companyPhones,
+            String companyCategory, String companyDescription, String companyAddress, String companyLocation,
+            String companyLogo, String companyFacebookProfile, String companyInstagramProfile) {
         this.companyId = companyId;
         this.companyName = companyName;
         this.companyEmail = companyEmail;
-        this.companyPhone = companyPhone;
+        this.companyPhones = companyPhones;
         this.companyCategory = companyCategory;
+        this.companyDescription = companyDescription;
         this.companyLogo = companyLogo;
+        this.companyAddress = companyAddress;
+        this.companyLocation = companyLocation;
+        this.companyFacebookProfile = companyFacebookProfile;
+        this.companyInstagramProfile = companyInstagramProfile;
     }
 
     public String getCompanyId() {
@@ -64,8 +76,12 @@ public class Company {
         return companyEmail;
     }
 
-    public String getCompanyPhone() {
-        return companyPhone;
+    public List<Map<String, String>> getCompanyPhones() {
+        return companyPhones;
+    }
+
+    public void setCompanyPhones(List<Map<String, String>> companyPhones) {
+        this.companyPhones = companyPhones;
     }
 
     public String getCompanyCategory() {
@@ -76,13 +92,44 @@ public class Company {
         return companyLogo;
     }
 
-    public MultipartFile getImage() {
-        return image;
+    public String getCompanyAddress() {
+        return companyAddress;
     }
 
-    @Override
-    public String toString() {
-        return "Company {" + "companyId=" + companyId + ", companyName='" + companyName + ", companyEmail=" + companyEmail + ", companyPhone=" + companyPhone + ", companyCategory=" + companyCategory +", companyLogo=" + companyLogo + '\'' + '}';
+    public void setCompanyAddress(String companyAddress) {
+        this.companyAddress = companyAddress;
+    }
+
+    public String getCompanyLocation() {
+        return companyLocation;
+    }
+
+    public void setCompanyLocation(String companyLocation) {
+        this.companyLocation = companyLocation;
+    }
+
+    public String getCompanyFacebookProfile() {
+        return companyFacebookProfile;
+    }
+
+    public void setCompanyFacebookProfile(String companyFacebookProfile) {
+        this.companyFacebookProfile = companyFacebookProfile;
+    }
+
+    public String getCompanyInstagramProfile() {
+        return companyInstagramProfile;
+    }
+
+    public void setCompanyInstagramProfile(String companyInstagramProfile) {
+        this.companyInstagramProfile = companyInstagramProfile;
+    }
+
+    public String getCompanyDescription() {
+        return companyDescription;
+    }
+
+    public void setCompanyDescription(String companyDescription) {
+        this.companyDescription = companyDescription;
     }
 
 }
