@@ -2,6 +2,9 @@ package com.camaraturismoorosi.apicamaraturismoorosi.directory;
 
 import java.util.List;
 
+import com.camaraturismoorosi.apicamaraturismoorosi.model.Company;
+
+
 public interface DirectoryDao {
 
     List<Company> getAllCompanies();

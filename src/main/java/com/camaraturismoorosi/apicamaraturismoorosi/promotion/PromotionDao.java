@@ -12,5 +12,5 @@ public interface PromotionDao {
 
     void deletePromotion(String promotionId);
 
-    void insertPromotion(Promotion promotion);
+    void insertPromotion(Promotion promotion) throws Exception;
 }

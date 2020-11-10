@@ -1,4 +1,4 @@
-package com.camaraturismoorosi.apicamaraturismoorosi.directory;
+package com.camaraturismoorosi.apicamaraturismoorosi.model;
 
 import java.util.List;
 import java.util.Map;

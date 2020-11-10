@@ -1,4 +1,4 @@
-package com.camaraturismoorosi.apicamaraturismoorosi.directory;
+package com.camaraturismoorosi.apicamaraturismoorosi.model;
 
 public class Error {
 

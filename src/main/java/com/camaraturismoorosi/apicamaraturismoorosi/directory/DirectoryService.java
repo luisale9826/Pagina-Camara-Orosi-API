@@ -7,6 +7,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.camaraturismoorosi.apicamaraturismoorosi.firebase.FirebaseService;
+import com.camaraturismoorosi.apicamaraturismoorosi.model.Company;
+import com.camaraturismoorosi.apicamaraturismoorosi.model.Error;
+
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,29 +81,69 @@ public class DirectoryService implements DirectoryDao {
     public Map<Integer, Error> checkNameEmailPhonesUnique(Company company) {
         Map<Integer, Error> errors = new HashMap<Integer, Error>();
         List<Company> companies = getAllCompanies();
-        Optional<Company> uniqueName = companies.stream()
-                .filter(actualCompany -> actualCompany.getCompanyName().equalsIgnoreCase(company.getCompanyName()))
-                .findFirst();
-        if (!uniqueName.isEmpty()) {
-            errors.put(0, new Error("invalidCompanyName", "El nombre de la compañía ya se encuentra registrado en el sistema"));
-        }
-        Optional<Company> uniqueEmail = companies.stream()
-                .filter(actualCompany -> !actualCompany.getCompanyEmail().equals("") && actualCompany.getCompanyEmail().equals(company.getCompanyEmail())).findFirst();
-        if (!uniqueEmail.isEmpty()) {
-            errors.put(1, new Error("invalidCompanyEmail", "El correo de la compañía ya se encuentra registrado en el sistema"));
+        Optional<Company> uniqueName = null;
+        if (company.getCompanyId() == null) {
+            uniqueName = companies.stream()
+                    .filter(actualCompany -> actualCompany.getCompanyName().equalsIgnoreCase(company.getCompanyName()))
+                    .findFirst();
+        } else {
+            uniqueName = companies.stream()
+                    .filter(actualCompany -> actualCompany.getCompanyName().equalsIgnoreCase(company.getCompanyName())
+                            && !actualCompany.getCompanyId().equals(company.getCompanyId()))
+                    .findFirst();
         }
 
-        for (Company actualCompany : companies) {
-            List<Map<String, String>> phones = actualCompany.getCompanyPhones();
-            for (Map<String, String> phone : phones) {
-                String result = equalPhones(phone, company);
-                if (!result.equals("")) {
-                    errors.put(2, new Error("invalidPhoneNumber", String.format("El número de teléfono: %s ya se encuentra registrado en el sistema", result)));
-                    return errors;
+        if (!uniqueName.isEmpty()) {
+            errors.put(0, new Error("invalidCompanyName",
+                    "El nombre de la compañía ya se encuentra registrado en el sistema"));
+        }
+
+        Optional<Company> uniqueEmail = null;
+        if (company.getCompanyId() == null) {
+            uniqueEmail = companies.stream().filter(actualCompany -> !actualCompany.getCompanyEmail().equals("")
+                    && actualCompany.getCompanyEmail().equals(company.getCompanyEmail())).findFirst();
+        } else {
+            uniqueEmail = companies.stream()
+                    .filter(actualCompany -> !actualCompany.getCompanyEmail().equals("")
+                            && actualCompany.getCompanyEmail().equals(company.getCompanyEmail())
+                            && !actualCompany.getCompanyId().equals(company.getCompanyId()))
+                    .findFirst();
+        }
+
+        if (!uniqueEmail.isEmpty()) {
+            errors.put(1, new Error("invalidCompanyEmail",
+                    "El correo de la compañía ya se encuentra registrado en el sistema"));
+        }
+
+        if (company.getCompanyId() == null) {
+            for (Company actualCompany : companies) {
+                List<Map<String, String>> phones = actualCompany.getCompanyPhones();
+                for (Map<String, String> phone : phones) {
+                    String result = equalPhones(phone, company);
+                    if (!result.equals("")) {
+                        errors.put(2, new Error("invalidPhoneNumber", String
+                                .format("El número de teléfono: %s ya se encuentra registrado en el sistema", result)));
+                        return errors;
+                    }
+                }
+            }
+        } else {
+            for (Company actualCompany : companies) {
+                if (!actualCompany.getCompanyId().equals(company.getCompanyId())) {
+                    List<Map<String, String>> phones = actualCompany.getCompanyPhones();
+                    for (Map<String, String> phone : phones) {
+                        String result = equalPhones(phone, company);
+                        if (!result.equals("")) {
+                            errors.put(2,
+                                    new Error("invalidPhoneNumber", String.format(
+                                            "El número de teléfono: %s ya se encuentra registrado en el sistema",
+                                            result)));
+                            return errors;
+                        }
+                    }
                 }
             }
         }
-
         return errors;
 
     }
@@ -114,4 +157,5 @@ public class DirectoryService implements DirectoryDao {
 
         return "";
     }
+
 }

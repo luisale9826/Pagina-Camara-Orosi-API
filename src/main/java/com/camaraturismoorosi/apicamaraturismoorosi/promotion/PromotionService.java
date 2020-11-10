@@ -26,7 +26,7 @@ public class PromotionService implements PromotionDao {
 
 
     @Override
-    public void insertPromotion(Promotion promotion) {
+    public void insertPromotion(Promotion promotion) throws Exception {
   
        //String link = fbService.saveImage(FOLDER, company.getImage());
         Map<String, Object> newPromotion = new HashMap<>();
