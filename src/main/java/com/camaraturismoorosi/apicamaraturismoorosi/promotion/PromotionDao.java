@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.camaraturismoorosi.apicamaraturismoorosi.model.Promotion;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public interface PromotionDao {
 
     List<Promotion> getPromotions();
@@ -12,5 +14,6 @@ public interface PromotionDao {
 
     void deletePromotion(String promotionId);
 
-    void insertPromotion(Promotion promotion);
+    void insertPromotionFile(MultipartFile file, String name);
+
 }

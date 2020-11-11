@@ -11,6 +11,7 @@ import com.google.cloud.firestore.QueryDocumentSnapshot;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class PromotionService implements PromotionDao {
@@ -24,25 +25,11 @@ public class PromotionService implements PromotionDao {
         this.fbService = fbService;
     }
 
-
-    @Override
-    public void insertPromotion(Promotion promotion) {
-  
-       //String link = fbService.saveImage(FOLDER, company.getImage());
-        Map<String, Object> newPromotion = new HashMap<>();
-        newPromotion.put("title", promotion.getTitle());
-        newPromotion.put("companyName", promotion.getCompanyName());
-        newPromotion.put("description", promotion.getDescription());
-        //newPromotion.put("companyLogo", link);
-        fbService.insertObject(COLLECTION_NAME, newPromotion);
-    }
-
     @Override
     public List<Promotion> getPromotions() {
         List<QueryDocumentSnapshot> objects = fbService.getObjects(COLLECTION_NAME);
             return objects.stream()
-                    .map(document -> new Promotion(document.getString("id"), document.getString("title"),
-                            document.getString("companyName"), document.getString("description")))
+                    .map(document -> new Promotion(document.getString("name"), document.getString("link")))
                     .collect(Collectors.toList());
     }
 
@@ -57,4 +44,21 @@ public class PromotionService implements PromotionDao {
         // TODO Auto-generated method stub
 
     }
+
+    public void insertPromotionFile(MultipartFile file, String name) {
+        String link;
+        try {
+            link = fbService.saveImage(FOLDER, file);
+            Map<String, Object> newPromotion = new HashMap<>();
+            newPromotion.put("name", name);
+            newPromotion.put("link", link);
+            fbService.insertObject(COLLECTION_NAME, newPromotion);
+
+        } catch (Exception e) {
+         
+            e.printStackTrace();
+        }
+        
+   }
+
 }
