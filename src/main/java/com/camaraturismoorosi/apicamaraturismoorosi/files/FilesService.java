@@ -17,7 +17,7 @@ public class FilesService {
     }
 
     public String uploadFile(String path, MultipartFile image, String companyId) throws Exception {
-        return firebaseService.saveImage(path, image, companyId);
+        return firebaseService.saveImageCompany(path, image, companyId);
     }
 
     public void deleteFile(String path, String companyId) {
@@ -25,7 +25,7 @@ public class FilesService {
     }
 
     public String updateFile(String path, MultipartFile image, String companyId) throws Exception {
-        return firebaseService.saveImage(path, image, companyId);
+        return firebaseService.saveImageCompany(path, image, companyId);
     }
 
 }

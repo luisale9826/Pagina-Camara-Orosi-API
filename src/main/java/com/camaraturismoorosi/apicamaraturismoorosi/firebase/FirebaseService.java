@@ -51,10 +51,22 @@ public class FirebaseService {
         return null;
     }
 
-    public String saveImage(String path, MultipartFile image, String companyId) throws Exception {
+    public String saveImageCompany(String path, MultipartFile image, String companyId) throws Exception {
         if (image.getContentType().equals("image/png") || image.getContentType().equals("image/jpg") || image.getContentType().equals("image/jpeg")) {
             Bucket bucket = fbConfig.getStorageInstance();
             Blob blob = bucket.create(String.format("%s/%s", path, companyId), image.getInputStream(),
+                        image.getContentType());
+                return blob.getMediaLink();
+        } else {
+            throw new Exception("El formato del archivo no es el indicado");
+        }
+
+    }
+
+    public String saveImage(String path, MultipartFile image) throws Exception {
+        if (image.getContentType().equals("image/png") || image.getContentType().equals("image/jpg") || image.getContentType().equals("image/jpeg")) {
+            Bucket bucket = fbConfig.getStorageInstance();
+            Blob blob = bucket.create(String.format("%s/%s", path), image.getInputStream(),
                         image.getContentType());
                 return blob.getMediaLink();
         } else {
