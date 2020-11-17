@@ -16,8 +16,16 @@ public class FilesService {
         this.firebaseService = firebaseService;
     }
 
-    public String uploadFile(String path, MultipartFile image) throws Exception {
-        return firebaseService.saveImage(path, image);
+    public String uploadFile(String path, MultipartFile image, String companyId) throws Exception {
+        return firebaseService.saveImageCompany(path, image, companyId);
+    }
+
+    public void deleteFile(String path, String companyId) {
+        firebaseService.deleteImage(path, companyId);
+    }
+
+    public String updateFile(String path, MultipartFile image, String companyId) throws Exception {
+        return firebaseService.saveImageCompany(path, image, companyId);
     }
 
 }

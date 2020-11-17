@@ -6,8 +6,8 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import com.camaraturismoorosi.apicamaraturismoorosi.files.FilesService;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.camaraturismoorosi.apicamaraturismoorosi.model.Company;
+import com.camaraturismoorosi.apicamaraturismoorosi.model.Error;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +28,7 @@ public class DirectoryManagementController {
 
     private final DirectoryService directoryService;
     private final FilesService filesService;
+    private final String FOLDER_NAME = "directory";
 
     @Autowired
     public DirectoryManagementController(DirectoryService directoryService, FilesService fileService) {
@@ -37,21 +38,54 @@ public class DirectoryManagementController {
 
     @PutMapping
     @PreAuthorize("hasAuthority('directory:write')")
-    public void updateCompany(@Valid @RequestBody JsonNode body) {
-        Company company = new ObjectMapper().convertValue(body.get("company"), Company.class);
-        directoryService.updateCompany(company);
+    public ResponseEntity<Map<String, Object>> updateCompany(@Valid @RequestBody Company company) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        try {
+            Map<Integer, Error> errors = directoryService.checkNameEmailPhonesUnique(company);
+            if (!errors.isEmpty()) {
+                result.put("errors", errors);
+                return new ResponseEntity<Map<String, Object>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+            directoryService.updateCompany(company);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("Error al insertar compañía", e.getMessage());
+            return new ResponseEntity<Map<String, Object>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        result.put("message", "Compañía Insertada satisfactoriamente");
+        return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
+    }
+
+    @PutMapping(path = "/image")
+    @PreAuthorize("hasAuthority('directory:write')")
+    public ResponseEntity<Map<String, Object>> updateImage(@RequestParam("image") MultipartFile image,
+            @RequestParam("companyId") String companyId) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        try {
+            String url = filesService.updateFile(FOLDER_NAME, image, companyId);
+            directoryService.updateCompanyLogo(companyId, url);
+        } catch (Exception e) {
+            result.put("Error al editar la imagen", e.getMessage());
+            return new ResponseEntity<Map<String, Object>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        result.put("message", "Imagen editada en el servidor");
+        return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
     }
 
     @DeleteMapping
     @PreAuthorize("hasAuthority('directory:write')")
-    public ResponseEntity<String> deleteCompany(@RequestBody JsonNode body) {
+    public ResponseEntity<Map<String, Object>> deleteCompany(@RequestBody String companyId) {
+        Map<String, Object> result = new HashMap<String, Object>();
         try {
-            directoryService.deleteCompany(body.get("userId").asText());
+            filesService.deleteFile(FOLDER_NAME, companyId);
+            directoryService.deleteCompany(companyId);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body("Error al eliminar la compañía: " + e.getMessage());
+            result.put("Error al subir la imagen", e.getMessage());
+            return new ResponseEntity<Map<String, Object>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return ResponseEntity.ok().body("Compañía eliminada");
+        result.put("message", "Imagen subida al servidor");
+        return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
     }
 
     @PostMapping
@@ -64,7 +98,7 @@ public class DirectoryManagementController {
                 result.put("errors", errors);
                 return new ResponseEntity<Map<String, Object>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
             }
-            String companyId= directoryService.insertCompany(company);
+            String companyId = directoryService.insertCompany(company);
             result.put("companyId", companyId);
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,17 +109,20 @@ public class DirectoryManagementController {
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
     }
 
-    @PostMapping(path = "/image" )
+    @PostMapping(path = "/image")
     @PreAuthorize("hasAuthority('directory:write')")
-    public ResponseEntity<String> uploadImage(@RequestParam("image") MultipartFile image,
+    public ResponseEntity<Map<String, Object>> uploadImage(@RequestParam("image") MultipartFile image,
             @RequestParam("companyId") String companyId) {
+        Map<String, Object> result = new HashMap<String, Object>();
         try {
-            String url = filesService.uploadFile("directory", image);
+            String url = filesService.uploadFile(FOLDER_NAME, image, companyId);
             directoryService.updateCompanyLogo(companyId, url);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Error al subir la imagen al servidor" + e.getMessage());
+            result.put("Error al subir la imagen", e.getMessage());
+            return new ResponseEntity<Map<String, Object>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return ResponseEntity.ok().body("Image subida al servidor");
+        result.put("message", "Imagen subida al servidor");
+        return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
     }
 
 }

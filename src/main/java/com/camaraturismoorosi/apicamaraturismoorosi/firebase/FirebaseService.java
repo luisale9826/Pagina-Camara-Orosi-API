@@ -51,11 +51,22 @@ public class FirebaseService {
         return null;
     }
 
-    public String saveImage(String path, MultipartFile image) throws Exception {
-        if (image.getContentType().equals("image/png") || image.getContentType().equals("image/jpg")) {
+    public String saveImageCompany(String path, MultipartFile image, String companyId) throws Exception {
+        if (image.getContentType().equals("image/png") || image.getContentType().equals("image/jpg") || image.getContentType().equals("image/jpeg")) {
             Bucket bucket = fbConfig.getStorageInstance();
-            Blob blob;
-                blob = bucket.create(path + "/" + image.getOriginalFilename(), image.getInputStream(),
+            Blob blob = bucket.create(String.format("%s/%s", path, companyId), image.getInputStream(),
+                        image.getContentType());
+                return blob.getMediaLink();
+        } else {
+            throw new Exception("El formato del archivo no es el indicado");
+        }
+
+    }
+
+    public String saveImage(String path, MultipartFile image) throws Exception {
+        if (image.getContentType().equals("image/png") || image.getContentType().equals("image/jpg") || image.getContentType().equals("image/jpeg")) {
+            Bucket bucket = fbConfig.getStorageInstance();
+            Blob blob = bucket.create(String.format("%s/%s", path), image.getInputStream(),
                         image.getContentType());
                 return blob.getMediaLink();
         } else {
@@ -68,6 +79,15 @@ public class FirebaseService {
         DocumentReference documentRef = fbConfig.getFirestoreInstance().collection(collection).document(objectId);
         documentRef.get();
         documentRef.update(updatedFields);
+    }
+
+    public void deleteImage(String path, String companyId) {
+        Bucket bucket = fbConfig.getStorageInstance();
+        String file= String.format("%s/%s", path, companyId);
+        Blob blob = bucket.get(file);
+        if (blob != null) {
+            blob.delete();
+        }
     }
 
 }
