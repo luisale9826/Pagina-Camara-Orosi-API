@@ -10,7 +10,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import static com.camaraturismoorosi.apicamaraturismoorosi.security.ApplicationUserPermission.*;
 
 public enum ApplicationUserRole {
-    ADMIN(Sets.newHashSet(DIRECTORY_READ, DIRECTORY_WRITE, USER_WRITE, USER_READ));
+    ADMIN(Sets.newHashSet(DIRECTORY_READ, DIRECTORY_WRITE, USER_WRITE, USER_READ, PROMOTION_READ, PROMOTION_WRITE));
+
     private final Set<ApplicationUserPermission> permissions;
 
     ApplicationUserRole(Set<ApplicationUserPermission> permissions) {
@@ -23,8 +24,7 @@ public enum ApplicationUserRole {
 
     public Set<SimpleGrantedAuthority> getGrantedAuthorities() {
         Set<SimpleGrantedAuthority> permissions = getPermissions().stream()
-                .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
-                .collect(Collectors.toSet());
+                .map(permission -> new SimpleGrantedAuthority(permission.getPermission())).collect(Collectors.toSet());
         permissions.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
         return permissions;
     }

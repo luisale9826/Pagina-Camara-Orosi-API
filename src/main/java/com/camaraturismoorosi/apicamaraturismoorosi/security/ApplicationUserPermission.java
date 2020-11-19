@@ -4,7 +4,9 @@ public enum ApplicationUserPermission {
     DIRECTORY_READ("directory:read"),
     DIRECTORY_WRITE("directory:write"),
     USER_WRITE("user:write"),
-    USER_READ("user:read");
+    USER_READ("user:read"),
+    PROMOTION_READ("promotion:read"),
+    PROMOTION_WRITE("promotion:write");
 
     private final String permission;
     ApplicationUserPermission(String permission) {
