@@ -51,6 +51,11 @@ public class FirebaseService {
         return null;
     }
 
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
     public String saveImageCompany(String path, MultipartFile image, String companyId) throws Exception {
         if (image.getContentType().equals("image/png") || image.getContentType().equals("image/jpg") || image.getContentType().equals("image/jpeg")) {
             Bucket bucket = fbConfig.getStorageInstance();
@@ -63,6 +68,22 @@ public class FirebaseService {
 
     }
 
+<<<<<<< Updated upstream
+=======
+    public String saveImagePromotion(String path, MultipartFile image, String name) throws Exception {
+        if (image.getContentType().equals("image/png") || image.getContentType().equals("image/jpg") || image.getContentType().equals("image/jpeg")) {
+            Bucket bucket = fbConfig.getStorageInstance();
+            Blob blob = bucket.create(String.format("%s/%s", path, name), image.getInputStream(),
+                        image.getContentType());
+                return blob.getMediaLink();
+        } else {
+            throw new Exception("El formato del archivo no es el indicado");
+        }
+
+    }
+
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     public String saveImage(String path, MultipartFile image) throws Exception {
         if (image.getContentType().equals("image/png") || image.getContentType().equals("image/jpg") || image.getContentType().equals("image/jpeg")) {
             Bucket bucket = fbConfig.getStorageInstance();

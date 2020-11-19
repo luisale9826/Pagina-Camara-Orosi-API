@@ -36,7 +36,7 @@ public class PromotionController {
 
     List<String> files = new ArrayList<String>();
 
-    @PostMapping(value = "/savefile", consumes = { "multipart/form-data" })
+    /*@PostMapping(value = "/savefile", consumes = { "multipart/form-data" })
     public ResponseEntity<String> handleFileUpload(@RequestParam("archivo") MultipartFile file,@RequestParam("nombre") String name) {
         System.out.println("Recibe imagen del front");
         String message;
@@ -45,7 +45,7 @@ public class PromotionController {
          message = "Successfully uploaded!";
          return ResponseEntity.status(HttpStatus.OK).body(message);
 
-   }
+   }*/
   
 }
 
