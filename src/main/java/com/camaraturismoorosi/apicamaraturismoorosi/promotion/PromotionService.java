@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.camaraturismoorosi.apicamaraturismoorosi.files.FilesService;
 import com.camaraturismoorosi.apicamaraturismoorosi.firebase.FirebaseService;
 import com.camaraturismoorosi.apicamaraturismoorosi.model.Promotion;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
@@ -18,10 +19,12 @@ public class PromotionService implements PromotionDao {
 
     private final String COLLECTION_NAME = "promotions";
     private final String FOLDER = "promotion";
+    private final FilesService filesService;
     private final FirebaseService fbService;
 
     @Autowired
-    public PromotionService(FirebaseService fbService) {
+    public PromotionService(FilesService filesService, FirebaseService fbService) {
+        this.filesService = filesService;
         this.fbService = fbService;
     }
 
@@ -48,7 +51,7 @@ public class PromotionService implements PromotionDao {
     public void insertPromotionFile(MultipartFile file, String name) {
         String link;
         try {
-            link = fbService.saveImage(FOLDER, file);
+            link = filesService.uploadPromotion(FOLDER, file, name);
             Map<String, Object> newPromotion = new HashMap<>();
             newPromotion.put("name", name);
             newPromotion.put("link", link);
