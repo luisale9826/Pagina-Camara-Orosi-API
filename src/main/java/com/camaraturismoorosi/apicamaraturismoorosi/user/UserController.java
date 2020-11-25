@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -63,9 +61,9 @@ public class UserController {
 
     @DeleteMapping
     @PreAuthorize("hasAuthority('user:write')")
-    public ResponseEntity<String> deleteUser(@RequestBody JsonNode body) {
+    public ResponseEntity<String> deleteUser(@RequestBody String userId) {
         try {
-            userService.deleteUser(body.get("userId").asText());
+            userService.deleteUser(userId);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500)
