@@ -1,10 +1,13 @@
 package com.camaraturismoorosi.apicamaraturismoorosi.user;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -28,16 +31,17 @@ public class UserController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('user:write')")
-    public ResponseEntity<String> insertUser(@Valid @RequestBody User user) {
+    public ResponseEntity<Map<String, Object>> insertUser(@Valid @RequestBody User user) {
+        Map<String, Object> result = new HashMap<String, Object>();
         try {
             userService.insertUser(user);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body(e.getMessage());
+            result.put("Error al insertar el usuario", e.getMessage());
+            return new ResponseEntity<Map<String, Object>>(result, HttpStatus.BAD_REQUEST);
         }
-        return ResponseEntity
-                .ok()
-                .body(String.format("Usuario: %s insertado correctamente", user.getUserName()));
+        result.put("message", "Usuario Insertado satisfactoriamente");
+        return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -48,28 +52,32 @@ public class UserController {
 
     @PutMapping
     @PreAuthorize("hasAuthority('user:write')")
-    public ResponseEntity<String> updateUser(@Valid @RequestBody User user) {
+    public ResponseEntity<Map<String, Object>> updateUser(@Valid @RequestBody User user) {
+        Map<String, Object> result = new HashMap<String, Object>();
         try {
             userService.updateUser(user);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500)
-            .body("Error al modificar el usuario" + e.getMessage());
+            result.put("Error al eliminar el usuario", e.getMessage());
+            return new ResponseEntity<Map<String, Object>>(result, HttpStatus.BAD_REQUEST);
         }
-        return ResponseEntity.ok().body("Usuario modificado");
+        result.put("message", "Usuario eliminado satisfactoriamente");
+        return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
     }
 
     @DeleteMapping
     @PreAuthorize("hasAuthority('user:write')")
-    public ResponseEntity<String> deleteUser(@RequestBody String userId) {
+    public ResponseEntity<Map<String, Object>> deleteUser(@RequestBody String userId) {
+        Map<String, Object> result = new HashMap<String, Object>();
         try {
             userService.deleteUser(userId);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500)
-            .body("Error eliminar el usuario: " + e.getMessage());
+            result.put("Error al eliminar el usuario", e.getMessage());
+            return new ResponseEntity<Map<String, Object>>(result, HttpStatus.BAD_REQUEST);
         }
-        return ResponseEntity.ok().body("Usuario eliminado");
+        result.put("message", "Usuario eliminado satisfactoriamente");
+        return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
     }
 
 }

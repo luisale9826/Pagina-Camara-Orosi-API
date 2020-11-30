@@ -44,14 +44,13 @@ public class PromotionService implements PromotionDao {
 
     @Override
     public void deletePromotion(String promotionId) {
-        // TODO Auto-generated method stub
 
     }
 
     public void insertPromotionFile(MultipartFile file, String name) {
         String link;
         try {
-            link = filesService.uploadPromotion(FOLDER, file, name);
+            link = filesService.uploadFile(FOLDER, file, name);
             Map<String, Object> newPromotion = new HashMap<>();
             newPromotion.put("name", name);
             newPromotion.put("link", link);

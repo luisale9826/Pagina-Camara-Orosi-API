@@ -27,15 +27,15 @@ public class UserService implements UserDao {
 
     @Override
     public void insertUser(User user) throws Exception {
+        user.setRole("admin");
         List<QueryDocumentSnapshot> filter = fbService.getObjects(COLLECTION_NAME).stream()
-                .filter(userData -> userData.get("userEmail").equals(user.getUserEmail())).collect(Collectors.toList());
+                .filter(userData -> userData.get("userName").equals(user.getUserName())).collect(Collectors.toList());
         if (!filter.isEmpty()) {
             throw new Exception("El usuario ya se encuentra registrado en el sistema");
         }
         Map<String, Object> newUser = new HashMap<>();
         newUser.put("userName", user.getUserName());
         newUser.put("password", passwordEncoder.encode(user.getPassword()));
-        newUser.put("userEmail", user.getUserEmail());
         newUser.put("role", user.getRole());
         fbService.insertObject(COLLECTION_NAME, newUser);
     }
@@ -58,7 +58,7 @@ public class UserService implements UserDao {
     public List<User> getUsers() {
         List<QueryDocumentSnapshot> objects = fbService.getObjects(COLLECTION_NAME);
             return objects.stream()
-                    .map(user -> new User(user.getId(), user.getString("userName"), user.getString("userEmail"), user.getString("password"), user.getString("role")))
+                    .map(user -> new User(user.getId(), user.getString("userName"), user.getString("password"), user.getString("role")))
                     .collect(Collectors.toList()); 
     }
     

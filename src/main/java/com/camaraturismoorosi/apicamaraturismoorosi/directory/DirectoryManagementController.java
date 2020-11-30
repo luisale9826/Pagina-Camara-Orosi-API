@@ -44,13 +44,13 @@ public class DirectoryManagementController {
             Map<Integer, Error> errors = directoryService.checkNameEmailPhonesUnique(company);
             if (!errors.isEmpty()) {
                 result.put("errors", errors);
-                return new ResponseEntity<Map<String, Object>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<Map<String, Object>>(result, HttpStatus.BAD_REQUEST);
             }
             directoryService.updateCompany(company);
         } catch (Exception e) {
             e.printStackTrace();
             result.put("Error al insertar compañía", e.getMessage());
-            return new ResponseEntity<Map<String, Object>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<Map<String, Object>>(result, HttpStatus.BAD_REQUEST);
         }
         result.put("message", "Compañía Insertada satisfactoriamente");
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
@@ -66,7 +66,7 @@ public class DirectoryManagementController {
             directoryService.updateCompanyLogo(companyId, url);
         } catch (Exception e) {
             result.put("Error al editar la imagen", e.getMessage());
-            return new ResponseEntity<Map<String, Object>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<Map<String, Object>>(result, HttpStatus.BAD_REQUEST);
         }
         result.put("message", "Imagen editada en el servidor");
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
@@ -82,7 +82,7 @@ public class DirectoryManagementController {
         } catch (Exception e) {
             e.printStackTrace();
             result.put("Error al subir la imagen", e.getMessage());
-            return new ResponseEntity<Map<String, Object>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<Map<String, Object>>(result, HttpStatus.BAD_REQUEST);
         }
         result.put("message", "Imagen subida al servidor");
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
@@ -96,14 +96,14 @@ public class DirectoryManagementController {
             Map<Integer, Error> errors = directoryService.checkNameEmailPhonesUnique(company);
             if (!errors.isEmpty()) {
                 result.put("errors", errors);
-                return new ResponseEntity<Map<String, Object>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<Map<String, Object>>(result, HttpStatus.BAD_REQUEST);
             }
             String companyId = directoryService.insertCompany(company);
             result.put("companyId", companyId);
         } catch (Exception e) {
             e.printStackTrace();
             result.put("Error al insertar compañía", e.getMessage());
-            return new ResponseEntity<Map<String, Object>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<Map<String, Object>>(result, HttpStatus.BAD_REQUEST);
         }
         result.put("message", "Compañía Insertada satisfactoriamente");
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
@@ -119,7 +119,7 @@ public class DirectoryManagementController {
             directoryService.updateCompanyLogo(companyId, url);
         } catch (Exception e) {
             result.put("Error al subir la imagen", e.getMessage());
-            return new ResponseEntity<Map<String, Object>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<Map<String, Object>>(result, HttpStatus.BAD_REQUEST);
         }
         result.put("message", "Imagen subida al servidor");
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);

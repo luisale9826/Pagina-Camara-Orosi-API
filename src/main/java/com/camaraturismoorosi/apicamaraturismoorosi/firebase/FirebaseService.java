@@ -51,34 +51,10 @@ public class FirebaseService {
         return null;
     }
 
-    public String saveImageCompany(String path, MultipartFile image, String companyId) throws Exception {
+    public String saveImage(String path, MultipartFile image, String fileId) throws Exception {
         if (image.getContentType().equals("image/png") || image.getContentType().equals("image/jpg") || image.getContentType().equals("image/jpeg")) {
             Bucket bucket = fbConfig.getStorageInstance();
-            Blob blob = bucket.create(String.format("%s/%s", path, companyId), image.getInputStream(),
-                        image.getContentType());
-                return blob.getMediaLink();
-        } else {
-            throw new Exception("El formato del archivo no es el indicado");
-        }
-
-    }
-
-    public String saveImagePromotion(String path, MultipartFile image, String name) throws Exception {
-        if (image.getContentType().equals("image/png") || image.getContentType().equals("image/jpg") || image.getContentType().equals("image/jpeg")) {
-            Bucket bucket = fbConfig.getStorageInstance();
-            Blob blob = bucket.create(String.format("%s/%s", path, name), image.getInputStream(),
-                        image.getContentType());
-                return blob.getMediaLink();
-        } else {
-            throw new Exception("El formato del archivo no es el indicado");
-        }
-
-    }
-
-    public String saveImage(String path, MultipartFile image) throws Exception {
-        if (image.getContentType().equals("image/png") || image.getContentType().equals("image/jpg") || image.getContentType().equals("image/jpeg")) {
-            Bucket bucket = fbConfig.getStorageInstance();
-            Blob blob = bucket.create(String.format("%s/%s", path), image.getInputStream(),
+            Blob blob = bucket.create(String.format("%s/%s", path, fileId), image.getInputStream(),
                         image.getContentType());
                 return blob.getMediaLink();
         } else {
@@ -93,9 +69,9 @@ public class FirebaseService {
         documentRef.update(updatedFields);
     }
 
-    public void deleteImage(String path, String companyId) {
+    public void deleteImage(String path, String fileId) {
         Bucket bucket = fbConfig.getStorageInstance();
-        String file= String.format("%s/%s", path, companyId);
+        String file= String.format("%s/%s", path, fileId);
         Blob blob = bucket.get(file);
         if (blob != null) {
             blob.delete();

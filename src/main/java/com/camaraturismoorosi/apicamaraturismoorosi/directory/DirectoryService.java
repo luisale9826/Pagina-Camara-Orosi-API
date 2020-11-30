@@ -27,6 +27,7 @@ public class DirectoryService implements DirectoryDao {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<Company> getAllCompanies() {
         List<QueryDocumentSnapshot> objects = fbService.getObjects(COLLECTION_NAME);
         return objects.stream()

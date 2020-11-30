@@ -1,7 +1,5 @@
 package com.camaraturismoorosi.apicamaraturismoorosi.files;
 
-import javax.lang.model.element.Name;
-
 import com.camaraturismoorosi.apicamaraturismoorosi.firebase.FirebaseService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,21 +17,16 @@ public class FilesService {
     }
 
 
-    public String uploadFile(String path, MultipartFile image, String companyId) throws Exception {
-        return firebaseService.saveImageCompany(path, image, companyId);
+    public String uploadFile(String path, MultipartFile image, String fileId) throws Exception {
+        return firebaseService.saveImage(path, image, fileId);
     }
 
-    public String uploadPromotion(String path, MultipartFile image, String name) throws Exception {
-        return firebaseService.saveImagePromotion(path, image, name);
+    public void deleteFile(String path, String fileId) {
+        firebaseService.deleteImage(path, fileId);
     }
 
-
-    public void deleteFile(String path, String companyId) {
-        firebaseService.deleteImage(path, companyId);
-    }
-
-    public String updateFile(String path, MultipartFile image, String companyId) throws Exception {
-        return firebaseService.saveImageCompany(path, image, companyId);
+    public String updateFile(String path, MultipartFile image, String fileId) throws Exception {
+        return firebaseService.saveImage(path, image, fileId);
 
     }
 
