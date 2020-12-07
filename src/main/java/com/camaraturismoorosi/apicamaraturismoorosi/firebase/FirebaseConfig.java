@@ -24,7 +24,7 @@ public class FirebaseConfig {
     private FirebaseApp firebaseInitializer() {
         FileInputStream serviceAccount;
         try {
-            serviceAccount = new FileInputStream("sitio-web-camara-orosi-firebase-credentials");
+            serviceAccount = new FileInputStream("sitio-web-camara-orosi-firebase-credentials.json");
 
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setStorageBucket("sitio-web-camara-orosi.appspot.com")
