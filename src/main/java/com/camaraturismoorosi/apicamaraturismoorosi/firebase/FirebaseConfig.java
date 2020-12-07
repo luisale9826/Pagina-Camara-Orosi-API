@@ -24,10 +24,10 @@ public class FirebaseConfig {
     private FirebaseApp firebaseInitializer() {
         FileInputStream serviceAccount;
         try {
-            serviceAccount = new FileInputStream("credentials.json");
+            serviceAccount = new FileInputStream("sitio-web-camara-orosi-firebase-credentials");
 
             FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setStorageBucket("prueba-3e914.appspot.com")
+                    .setStorageBucket("sitio-web-camara-orosi.appspot.com")
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
 
             firebaseApp = FirebaseApp.initializeApp(options);
