@@ -13,21 +13,24 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.cloud.FirestoreClient;
 import com.google.firebase.cloud.StorageClient;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class FirebaseConfig {
 
     private FirebaseApp firebaseApp;
+    @Autowired
+    private FirebaseInit firebaseInit;
 
     @PostConstruct
     private FirebaseApp firebaseInitializer() {
         FileInputStream serviceAccount;
         try {
-            serviceAccount = new FileInputStream("sitio-web-camara-orosi-firebase-credentials.json");
+            serviceAccount = new FileInputStream(firebaseInit.getCredentials());
 
             FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setStorageBucket("sitio-web-camara-orosi.appspot.com")
+                    .setStorageBucket(firebaseInit.getBucket())
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount)).build();
 
             firebaseApp = FirebaseApp.initializeApp(options);

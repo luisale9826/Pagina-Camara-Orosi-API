@@ -1,0 +1,39 @@
+{
+  "properties": [
+    {
+      "name": "application.jwt.secretkey",
+      "type": "java.lang.String",
+      "description": "A description for 'application.jwt.secretkey'"
+    },
+    {
+        "name": "application.jwt.tokenPrefix",
+        "type": "java.lang.String",
+        "description": "A description for 'application.jwt.tokenPrefix'"
+      },
+      {
+        "name": "application.jwt.tokenExpirationAfterDays",
+        "type": "java.lang.int",
+        "description": "A description for 'application.jwt.tokenExpirationAfterDays'"
+      },
+      {
+        "name": "firebase.bucket",
+        "type": "java.lang.String",
+        "description": "A description for 'firebase.bucket'"
+      },
+      {
+        "name": "firebase.credentials",
+        "type": "java.lang.String",
+        "description": "A description for 'firebase.credentials'"
+      },
+      {
+        "name": "admin-user.username",
+        "type": "java.lang.String",
+        "description": "A description for 'admin-user.username'"
+      },
+      {
+        "name": "admin-user.password",
+        "type": "java.lang.String",
+        "description": "A description for 'admin-user.password'"
+      }
+  ]
+}
