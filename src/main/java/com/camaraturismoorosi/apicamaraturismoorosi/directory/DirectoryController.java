@@ -35,7 +35,7 @@ public class DirectoryController {
         Map<String, Object> result = new HashMap<String, Object>();
         try {
             Company company = directoryService.getCompanyById(id);
-            result.put("Compañía", company);
+            result.put("Company", company);
         } catch (Exception e) {
             e.printStackTrace();
             result.put("Error al buscar la compañía", e.getMessage());
