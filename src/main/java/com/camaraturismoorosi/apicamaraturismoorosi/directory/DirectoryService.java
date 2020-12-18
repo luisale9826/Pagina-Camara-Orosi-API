@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import com.camaraturismoorosi.apicamaraturismoorosi.firebase.FirebaseService;
 import com.camaraturismoorosi.apicamaraturismoorosi.model.Company;
 import com.camaraturismoorosi.apicamaraturismoorosi.model.Error;
-
+import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,6 +157,16 @@ public class DirectoryService implements DirectoryDao {
         }
 
         return "";
+    }
+
+    public Company getCompanyById(String id) throws Exception {
+        if (!id.equals("")) {
+            DocumentSnapshot document = fbService.getObjectById(COLLECTION_NAME, id);
+            Company company = document.toObject(Company.class);
+            company.setCompanyId(document.getId());
+            return company;
+        }
+        throw new Exception("Debe especificar un id");
     }
 
 }

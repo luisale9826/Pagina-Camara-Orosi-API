@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutionException;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.storage.Blob;
@@ -52,18 +53,19 @@ public class FirebaseService {
     }
 
     public String saveImage(String path, MultipartFile image, String fileId) throws Exception {
-        if (image.getContentType().equals("image/png") || image.getContentType().equals("image/jpg") || image.getContentType().equals("image/jpeg")) {
+        if (image.getContentType().equals("image/png") || image.getContentType().equals("image/jpg")
+                || image.getContentType().equals("image/jpeg")) {
             Bucket bucket = fbConfig.getStorageInstance();
             Blob blob = bucket.create(String.format("%s/%s", path, fileId), image.getInputStream(),
-                        image.getContentType());
-                return blob.getMediaLink();
+                    image.getContentType());
+            return blob.getMediaLink();
         } else {
             throw new Exception("El formato del archivo no es el indicado");
         }
 
     }
 
-    public void updateObjectSpecificFields(String collection, String objectId, Map<String,Object> updatedFields) {
+    public void updateObjectSpecificFields(String collection, String objectId, Map<String, Object> updatedFields) {
         DocumentReference documentRef = fbConfig.getFirestoreInstance().collection(collection).document(objectId);
         documentRef.get();
         documentRef.update(updatedFields);
@@ -71,11 +73,17 @@ public class FirebaseService {
 
     public void deleteImage(String path, String fileId) {
         Bucket bucket = fbConfig.getStorageInstance();
-        String file= String.format("%s/%s", path, fileId);
+        String file = String.format("%s/%s", path, fileId);
         Blob blob = bucket.get(file);
         if (blob != null) {
             blob.delete();
         }
+    }
+
+    public DocumentSnapshot getObjectById(String collection, String id)
+            throws InterruptedException, ExecutionException {
+        Firestore fbInstance = fbConfig.getFirestoreInstance();
+        return fbInstance.collection(collection).document(id).get().get();
     }
 
 }
