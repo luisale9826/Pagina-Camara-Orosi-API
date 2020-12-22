@@ -16,7 +16,6 @@ public class FilesService {
         this.firebaseService = firebaseService;
     }
 
-
     public String uploadFile(String path, MultipartFile image, String fileId) throws Exception {
         return firebaseService.saveImage(path, image, fileId);
     }
@@ -27,7 +26,6 @@ public class FilesService {
 
     public String updateFile(String path, MultipartFile image, String fileId) throws Exception {
         return firebaseService.saveImage(path, image, fileId);
-
     }
 
 }
