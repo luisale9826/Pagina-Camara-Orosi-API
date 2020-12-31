@@ -30,7 +30,7 @@ public class DirectoryController {
         return directoryService.getAllCompanies();
     }
 
-    @GetMapping("/")
+    @GetMapping(path = "/")
     public ResponseEntity<Map<String, Object>> getCompanyById(@RequestParam("id") String id) {
         Map<String, Object> result = new HashMap<String, Object>();
         try {

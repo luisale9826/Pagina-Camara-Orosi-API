@@ -6,7 +6,9 @@ public enum ApplicationUserPermission {
     USER_WRITE("user:write"),
     USER_READ("user:read"),
     PROMOTION_READ("promotion:read"),
-    PROMOTION_WRITE("promotion:write");
+    PROMOTION_WRITE("promotion:write"),
+    CONFIGURATION_WRITE("configuration:write"),
+    CONFIGURATION_READ("configuration:read");
 
     private final String permission;
     ApplicationUserPermission(String permission) {

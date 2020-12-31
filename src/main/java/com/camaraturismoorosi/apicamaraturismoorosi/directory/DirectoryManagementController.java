@@ -56,7 +56,7 @@ public class DirectoryManagementController {
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
     }
 
-    @PutMapping(path = "/image")
+    @PutMapping(path = "image")
     @PreAuthorize("hasAuthority('directory:write')")
     public ResponseEntity<Map<String, Object>> updateImage(@RequestParam("image") MultipartFile image,
             @RequestParam("companyId") String companyId) {
@@ -109,7 +109,7 @@ public class DirectoryManagementController {
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
     }
 
-    @PostMapping(path = "/image")
+    @PostMapping(path = "image")
     @PreAuthorize("hasAuthority('directory:write')")
     public ResponseEntity<Map<String, Object>> uploadImage(@RequestParam("image") MultipartFile image,
             @RequestParam("companyId") String companyId) {
