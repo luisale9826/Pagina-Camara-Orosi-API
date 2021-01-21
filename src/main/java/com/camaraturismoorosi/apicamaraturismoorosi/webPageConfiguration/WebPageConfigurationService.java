@@ -1,12 +1,18 @@
 package com.camaraturismoorosi.apicamaraturismoorosi.webPageConfiguration;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
+
+import javax.validation.Valid;
 
 import com.camaraturismoorosi.apicamaraturismoorosi.files.FilesService;
 import com.camaraturismoorosi.apicamaraturismoorosi.firebase.FirebaseService;
 import com.camaraturismoorosi.apicamaraturismoorosi.model.Board;
+import com.camaraturismoorosi.apicamaraturismoorosi.model.Director;
+import com.camaraturismoorosi.apicamaraturismoorosi.model.Value;
 import com.google.cloud.firestore.DocumentSnapshot;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +42,12 @@ public class WebPageConfigurationService {
     public void editBoard(Board board) {
         final String COLLECTION = "board";
         Map<String, Object> currentBoard = new HashMap<>();
-        currentBoard.put("board", board);
+        currentBoard.put("president", board.getPresident());
+        currentBoard.put("vicepresident", board.getVicepresident());
+        currentBoard.put("secretary", board.getSecretary());
+        currentBoard.put("treasurer", board.getTreasurer());
+        currentBoard.put("vocal", board.getVocal());
+        currentBoard.put("fiscal", board.getFiscal());
         fbService.updateObject(COLLECTION, COLLECTION, currentBoard);
     }
 
@@ -74,4 +85,53 @@ public class WebPageConfigurationService {
         String documentText = document.get("text").toString();
         return documentText;
     }
+
+    @SuppressWarnings("unchecked")
+    public Board getBoard() throws InterruptedException, ExecutionException {
+        final String COLLECTION = "board";
+        DocumentSnapshot document = fbService.getObjectById(COLLECTION, COLLECTION);
+        Board board = new Board();
+        HashMap<String, String> map = (HashMap<String, String>) document.get("president");
+        Director member = new Director(map.get("name").toString(), map.get("major").toString());
+        board.setPresident(member);
+        map = (HashMap<String, String>) document.get("vicepresident");
+        member = new Director(map.get("name").toString(), map.get("major").toString());
+        board.setVicepresident(member);
+        map = (HashMap<String, String>) document.get("treasurer");
+        member = new Director(map.get("name").toString(), map.get("major").toString());
+        board.setTreasurer(member);
+        map = (HashMap<String, String>) document.get("secretary");
+        member = new Director(map.get("name").toString(), map.get("major").toString());
+        board.setSecretary(member);
+        map = (HashMap<String, String>) document.get("vocal");
+        member = new Director(map.get("name").toString(), map.get("major").toString());
+        board.setVocal(member);
+        map = (HashMap<String, String>) document.get("fiscal");
+        member = new Director(map.get("name").toString(), map.get("major").toString());
+        board.setFiscal(member);
+        return board;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<String> getBenefits() throws InterruptedException, ExecutionException {
+        final String COLLECTION = "benefits";
+        DocumentSnapshot document = fbService.getObjectById(COLLECTION, COLLECTION);
+        List<String> documentText = (List<String>) document.get("benefits");
+        return documentText;
+    }
+
+	public void editValues(@Valid List<Value> value) {
+        final String COLLECTION = "values";
+        Map<String, Object> values = new HashMap<>();
+        values.put("values", value);
+        fbService.updateObject(COLLECTION, COLLECTION, values);
+	}
+
+    @SuppressWarnings("unchecked")
+	public List<Value> getValues() throws InterruptedException, ExecutionException {
+        final String COLLECTION = "values";
+        DocumentSnapshot document = fbService.getObjectById(COLLECTION, COLLECTION);
+        List<Value> values = (ArrayList<Value>) document.get("values");
+		return values;
+	}
 }

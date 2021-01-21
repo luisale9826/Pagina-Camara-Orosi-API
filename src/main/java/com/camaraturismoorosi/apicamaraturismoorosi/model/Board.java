@@ -27,6 +27,8 @@ public class Board {
         this.fiscal = fiscal;
     }
 
+    public Board() {}
+
     public Director getPresident() {
         return president;
     }

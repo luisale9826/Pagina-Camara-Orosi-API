@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import com.camaraturismoorosi.apicamaraturismoorosi.model.Board;
+import com.camaraturismoorosi.apicamaraturismoorosi.model.Value;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -62,6 +63,21 @@ public class WebPageConfigurationManagementController {
         }
     }
 
+    @PostMapping(path = "values")
+    @PreAuthorize("hasAuthority('configuration:write')")
+    public ResponseEntity<Map<String, Object>> editValues(@Valid @RequestBody List<Value> value) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        try {
+            wConfigService.editValues(value);
+            result.put("message", "Se ha editado los valores");
+            return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("Error al editar los valores", e.getMessage());
+            return new ResponseEntity<Map<String, Object>>(result, HttpStatus.BAD_REQUEST);
+        }
+    }
+    
     @PostMapping(path = "text")
     @PreAuthorize("hasAuthority('configuration:write')")
     public ResponseEntity<Map<String, Object>> editText(@RequestParam("position") String position,
