@@ -65,10 +65,10 @@ public class WebPageConfigurationManagementController {
 
     @PostMapping(path = "values")
     @PreAuthorize("hasAuthority('configuration:write')")
-    public ResponseEntity<Map<String, Object>> editValues(@Valid @RequestBody List<Value> value) {
+    public ResponseEntity<Map<String, Object>> editValues(@Valid @RequestBody List<Value> values) {
         Map<String, Object> result = new HashMap<String, Object>();
         try {
-            wConfigService.editValues(value);
+            wConfigService.editValues(values);
             result.put("message", "Se ha editado los valores");
             return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
         } catch (Exception e) {
