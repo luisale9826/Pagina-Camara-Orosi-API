@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
-@RequestMapping({ "visiter/promotion" })
+@RequestMapping("visiter/cto/promotion")
 public class PromotionController {
 
     private final PromotionService promotionService;
@@ -23,10 +23,15 @@ public class PromotionController {
     }
 
 
+    @GetMapping(path = "/10")
+    public List<Promotion> getTopTenPromotions() {
+        return promotionService.getTopTenPromotions();
+    }
+    
     @GetMapping
     public List<Promotion> getPromotions() {
         return promotionService.getPromotions();
-    }  
+    }
 }
 
 

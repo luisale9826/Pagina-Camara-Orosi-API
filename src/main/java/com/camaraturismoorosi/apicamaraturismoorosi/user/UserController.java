@@ -58,10 +58,10 @@ public class UserController {
             userService.updateUser(user);
         } catch (Exception e) {
             e.printStackTrace();
-            result.put("Error al eliminar el usuario", e.getMessage());
+            result.put("Error al modificar el usuario", e.getMessage());
             return new ResponseEntity<Map<String, Object>>(result, HttpStatus.BAD_REQUEST);
         }
-        result.put("message", "Usuario eliminado satisfactoriamente");
+        result.put("message", "Usuario modificado satisfactoriamente");
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
     }
 

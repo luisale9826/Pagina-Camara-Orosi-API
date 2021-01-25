@@ -49,10 +49,10 @@ public class DirectoryManagementController {
             directoryService.updateCompany(company);
         } catch (Exception e) {
             e.printStackTrace();
-            result.put("Error al insertar compañía", e.getMessage());
+            result.put("Error al modifica compañía", e.getMessage());
             return new ResponseEntity<Map<String, Object>>(result, HttpStatus.BAD_REQUEST);
         }
-        result.put("message", "Compañía Insertada satisfactoriamente");
+        result.put("message", "Compañía Modificada satisfactoriamente");
         return new ResponseEntity<Map<String, Object>>(result, HttpStatus.CREATED);
     }
 
