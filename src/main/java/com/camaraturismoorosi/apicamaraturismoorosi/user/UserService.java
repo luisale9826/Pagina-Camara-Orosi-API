@@ -42,8 +42,15 @@ public class UserService implements UserDao {
 
     @Override
     public void updateUser(User user) throws Exception {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        fbService.updateObject(user.getUserId(), COLLECTION_NAME, user);
+        Map<String, Object> updateUser = new HashMap<>();
+        if (!user.getPassword().equals("not-changed")) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            updateUser.put("password", passwordEncoder.encode(user.getPassword()));
+
+        }
+        updateUser.put("userName", user.getUserName());
+        updateUser.put("role", user.getRole());
+        fbService.updateObjectSpecificFields(COLLECTION_NAME, user.getUserId(), updateUser);
     }
 
     @Override
